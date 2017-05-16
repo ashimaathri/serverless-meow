@@ -1,0 +1,30 @@
+{
+  "dependencies": {
+    "serverless": "^1.13.2"
+  },
+  "name": "serverless-meow",
+  "description": "An example app used to demo serverless in the Rackspace Intern Bootcamp May 2017",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ashimaathri/serverless-meow.git"
+  },
+  "keywords": [
+    "serverless",
+    "JS",
+    "AWS",
+    "Lambda",
+    "Meow"
+  ],
+  "author": "Ashima Athri",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/ashimaathri/serverless-meow/issues"
+  },
+  "homepage": "https://github.com/ashimaathri/serverless-meow#readme"
+}
