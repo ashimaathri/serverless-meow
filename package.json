@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "aws-sdk": "^2.52.0",
     "serverless": "^1.13.2"
   },
   "name": "serverless-meow",

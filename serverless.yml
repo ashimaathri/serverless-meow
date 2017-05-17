@@ -27,6 +27,37 @@ package:
   exclude:
     - scripts/**
 
+resources:
+  Resources:
+    KittehPhotoList:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: KittehPhotoList
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+    KittehPhotoListIamPolicy:
+      Type: AWS::IAM::Policy
+      DependsOn: KittehPhotoList
+      Properties:
+        PolicyName: serverless-meow-lambda-dynamodb
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:GetItem
+                - dynamodb:PutItem
+              Resource: arn:aws:dynamodb:*:*:table/KittehPhotoList
+        Roles:
+          - Ref: IamRoleLambdaExecution
+
 # you can add statements to the Lambda function's IAM Role here
 #  iamRoleStatements:
 #    - Effect: "Allow"
@@ -60,7 +91,12 @@ functions:
   select_kitteh:
     handler: handler.select_kitteh
     events:
-      - schedule: rate(5 minutes)
+      - s3: 
+          bucket: ${env:BUCKET_NAME}
+          event: s3:ObjectRemoved:*
+      - s3: 
+          bucket: ${env:BUCKET_NAME}
+          event: s3:ObjectCreated:*
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events

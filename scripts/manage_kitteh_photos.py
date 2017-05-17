@@ -9,27 +9,10 @@ import botocore
 boto3_session = boto3.Session(profile_name='serverless-meow')
 
 client = boto3_session.client('s3')
-BUCKET = 'ashima-serverless-meow'
+BUCKET = os.getenv('BUCKET_NAME')
 REGION = 'us-east-2'
 
-def bucket_pre_check(func):
-    def create_bucket_if_not_exist(*args, **kwargs):
-        try:
-            client.head_bucket(Bucket=BUCKET)
-        except botocore.exceptions.ClientError as e:
-            if e.response['Error']['Code'] == '404':
-                print('Bucket {bucket} did not exist, creating...'.format(bucket=BUCKET))
-                client.create_bucket(ACL='private',
-                                     Bucket=BUCKET,
-                                     CreateBucketConfiguration={'LocationConstraint': REGION})
-                print('Bucket created.')
-            else:
-                raise
-        else:
-            func(*args, **kwargs)
-    return create_bucket_if_not_exist
 
-@bucket_pre_check
 def upload_photo(photo_path):
     with open(photo_path, 'rb') as kitteh_photo:
         try:
@@ -46,7 +29,6 @@ def upload_photo(photo_path):
             print('Kitteh photo {path} already exists, skipping'.format(path=os.path.basename(photo_path)))
 
 
-@bucket_pre_check
 def remove_photo(photo_path):
     try:
         client.head_object(Bucket=BUCKET, Key=os.path.basename(photo_path))
@@ -71,11 +53,11 @@ if __name__ == '__main__':
                 if os.path.isfile(file_path):
                     print('Uploading kitteh photo {path} to s3 bucket {bucket}...'.format(path=file_path, bucket=BUCKET))
                     upload_photo(file_path)
-            print('Upload complete')
+                    print('Upload complete')
         elif os.path.isfile(args.add_photo_path):
             print('Uploading kitteh photo {path} to s3 bucket {bucket}...'.format(path=args.add_photo_path, bucket=BUCKET))
             upload_photo(args.add_photo_path)
-        print('Upload complete')
+            print('Upload complete')
     if args.remove_photo_path:
         if os.path.isdir(args.remove_photo_path):
             for item in os.listdir(args.remove_photo_path):
