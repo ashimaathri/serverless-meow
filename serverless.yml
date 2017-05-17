@@ -97,6 +97,12 @@ functions:
       - s3: 
           bucket: ${env:BUCKET_NAME}
           event: s3:ObjectCreated:*
+  hello_kitteh:
+    handler: handler.hello_kitteh
+    events:
+      - http:
+          path: /
+          method: get
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events

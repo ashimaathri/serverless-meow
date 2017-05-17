@@ -14,19 +14,19 @@ REGION = 'us-east-2'
 
 
 def upload_photo(photo_path):
-    with open(photo_path, 'rb') as kitteh_photo:
-        try:
-            client.head_object(Bucket=BUCKET,
-                               Key=os.path.basename(photo_path))
-        except botocore.exceptions.ClientError as e:
-            if e.response['Error']['Code'] == '404':
-                client.upload_fileobj(Fileobj=kitteh_photo,
-                                       Bucket=BUCKET,
-                                       Key=os.path.basename(photo_path))
-            else:
-                raise
+    try:
+        client.head_object(Bucket=BUCKET,
+                           Key=os.path.basename(photo_path))
+    except botocore.exceptions.ClientError as e:
+        if e.response['Error']['Code'] == '404':
+            client.upload_file(Filename=photo_path,
+                               Bucket=BUCKET,
+                               Key=os.path.basename(photo_path),
+                               ExtraArgs={'ACL': 'public-read'})
         else:
-            print('Kitteh photo {path} already exists, skipping'.format(path=os.path.basename(photo_path)))
+            raise
+    else:
+        print('Kitteh photo {path} already exists, skipping'.format(path=os.path.basename(photo_path)))
 
 
 def remove_photo(photo_path):
