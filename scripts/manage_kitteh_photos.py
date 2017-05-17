@@ -58,6 +58,8 @@ if __name__ == '__main__':
             print('Uploading kitteh photo {path} to s3 bucket {bucket}...'.format(path=args.add_photo_path, bucket=BUCKET))
             upload_photo(args.add_photo_path)
             print('Upload complete')
+        else:
+            print('Do not know what to do with this')
     if args.remove_photo_path:
         if os.path.isdir(args.remove_photo_path):
             for item in os.listdir(args.remove_photo_path):

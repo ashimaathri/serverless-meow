@@ -72,15 +72,37 @@ module.exports.hello_kitteh = (event, context, callback) => {
       callback(err);
     } else {
       let photo_list = (data.Item && data.Item.photo_list) || []
-      let links_list = photo_list.map((photo_name) => {
-        return `https://s3.us-east-2.amazonaws.com/${BUCKET_NAME}/${photo_name}`
-      });
-      let response = {
-        statusCode: 200,
-        body: JSON.stringify({
-          message: links_list 
-        })
-      };
+      let random_photo = photo_list[Math.floor(Math.random() * photo_list.length)];
+      let random_photo_link =  `https://s3.us-east-2.amazonaws.com/${BUCKET_NAME}/${random_photo}`
+      let response = `
+      <html>
+        <head>
+          <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+          <title>Serverless Meow</title>
+        </head>
+        <body style="background-color:#faebd7;">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-4"></div>
+              <div class="col-4">
+                <h1 class="text-center"> Serverless Meow! </h1>
+                <br><br><br><br>
+              </div>
+              <div class="col-4"></div>
+            </div>
+            <div class="row">
+              <div class="col-3"></div>
+              <div class="col-6">
+                <img src=${random_photo_link} alt=${random_photo} class="center-block img-thumbnail">
+              </div>
+              <div class="col-3"></div>
+            </div>
+          </div>
+          <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+          <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+          </body>
+        </html>`
       callback(null, response);
     }
   });
